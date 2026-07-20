@@ -1,4 +1,4 @@
-## Week 7 — Issue selection
+## Week 7 ï¿½ Issue selection
 
 **Issue link:** https://github.com/ascherj/pathreview/issues/116
 
@@ -25,3 +25,18 @@ services healthy before proceeding.
 **Setup confirmation:** [x] App runs locally at localhost:5173
 
 **Cohort ledger:** [ ] Issue added to cohort ledger
+
+
+## Week 8 — Reproduction & solution planning
+
+**Reproduction commit link:** https://github.com/gholapksh/pathreview/commit/e273ba5
+
+**Reproduction summary:**
+I reproduced the documentation gap by executing the SETUP.md steps natively in Windows PowerShell. The environment immediately failed due to the missing make command, and database connection errors occurred because the guide lacks instructions to manually initialize and verify the Docker Desktop engine state before running migrations.
+
+**PLAN.md link:** https://github.com/gholapksh/pathreview/blob/docs/116-windows-docker-setup-instructions/PLAN.md
+
+**Walkthrough video (recommended):** [Not recorded for this turn]
+
+**Blockers or open questions:**
+None at the moment. The path forward for updating the documentation layout is clear.
