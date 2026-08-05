@@ -123,7 +123,7 @@ repository has substantial pre-existing failures on `main`:
 | Check | Baseline on `main` | With my changes |
 |---|---|---|
 | `make test-unit` | 53 failed, 375 passed | 53 failed, 380 passed |
-| `ruff check .` | 182 errors | 182 errors |
+| `ruff check .` | 182 errors | 179 errors |
 | `black --check .` | 52 files would reformat | 52 files would reformat |
 | `mypy` (make target) | 5 errors | 5 errors |
 
