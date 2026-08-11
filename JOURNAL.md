@@ -149,3 +149,85 @@ raises `AttributeError` and reports unhealthy. This is a separate defect from
 #154 and I left the production code untouched; the tests substitute a mock
 settings object so the Postgres probe can be tested in isolation rather than
 papering over the bug. Worth filing as its own issue.
+
+
+## Week 10 — Iteration & reflection
+
+### Reviewer feedback
+
+**Feedback received:** [ ] Yes  [x] No — still awaiting review
+
+**Summary of feedback:**
+No reviewer feedback has come in. Per the Su26 course note, reviewer feedback
+isn't a feature this term, so I did not receive maintainer comments on the PR.
+
+**How you responded:**
+N/A — no feedback arrived to respond to.
+
+---
+
+### Reflection
+
+**What was harder than you expected?**
+The actual production fix — one line, wrapping a string in `text()` — took
+about five minutes to identify and implement. Almost everything else took
+hours: figuring out why my `.venv` was unusable from PowerShell, discovering
+my own tests weren't even running (they were silently "deselected" instead
+of failing, which is a much scarier failure mode than an obvious red X),
+and untangling that Weeks 7–8 of my own paperwork had been written against
+the wrong issue entirely. I expected the hard part of this module to be
+understanding someone else's code. It turned out to be understanding my
+own environment and my own prior work well enough to trust it.
+
+**What did you learn about working in a large codebase?**
+The biggest lesson was that "passing" isn't a binary in a codebase with
+pre-existing debt. `main` already had 53 failing tests, 182 lint errors,
+and 52 files that would be reformatted by the formatter. If I'd run
+`make check` naively and looked for a clean pass, I'd have concluded my
+change was catastrophic. The real question wasn't "does everything pass"
+but "did I make anything worse" — which meant I had to establish a
+baseline *before* touching anything and diff against it afterward. I also
+learned that conventions I might personally disagree with (like `Depends()`
+in a function default, which `mypy`/`ruff` flag) can be load-bearing
+project-wide decisions — it showed up 18 times across three files, so
+"fixing" it in the one file I touched would have made my file inconsistent
+with its neighbors instead of more correct.
+
+**How did AI tools help — and where did they fall short?**
+AI assistance (Claude Code) was most useful for the mechanical
+forensics: grepping for every raw-string `.execute()` call to confirm the
+bug's blast radius, running the same test file under three different
+"before/after" states to prove the regression test was real and not just
+coincidentally green, and catching that my tests were being deselected
+rather than passing. That's the kind of tedious, easy-to-skip verification
+that's easy for a human to hand-wave past under time pressure.
+
+Where it fell short was judgment calls that needed my sign-off rather than
+just execution: whether to commit with `--no-verify` given pre-existing
+lint/type failures, whether to keep or discard automatic `ruff --fix`
+changes, and which of my two conflicting branches (#116 docs vs. #154 code)
+was actually the real deliverable. AI could lay out the tradeoffs clearly,
+but it explicitly stopped and asked rather than deciding for me — which in
+retrospect was the right call, because those were project-management
+decisions about *my* submission, not code-correctness decisions.
+
+**What would you do differently if you started over?**
+I'd fix my environment (the WSL/Windows venv mismatch and the broken
+`pre-commit` hook) in Week 7, before writing any code, instead of
+discovering it in Week 9 while trying to run tests under time pressure.
+I'd also add `@pytest.mark.unit` to my tests the moment I wrote them,
+since silently-skipped tests are worse than failing tests — they give you
+false confidence. And I'd keep my JOURNAL.md and PLAN.md in sync with my
+actual working branch from day one; letting the paperwork drift onto a
+different issue than my code cost me a full afternoon of retroactive
+reconciliation.
+
+**What are you most proud of from this module?**
+Catching that two of my three original unit tests were broken —
+using `patch(..., create=True)` against a Pydantic model, which raises
+`AttributeError` during teardown — and that all three had been silently
+skipped by the test runner the whole time. It would have been very easy to
+see "tests exist in the repo" and assume the job was done. Actually
+verifying the regression guard by deliberately reverting my fix and
+watching the right test (and only that test) turn red is the habit I'm
+most glad I built this module.
